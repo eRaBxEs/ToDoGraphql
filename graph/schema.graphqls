@@ -36,3 +36,9 @@ type Mutation {
 
   createUser(input: NewUser!): User!
 }
+
+type Subscription {
+
+  userAdded: User!
+  
+}

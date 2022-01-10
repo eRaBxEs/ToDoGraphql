@@ -23,6 +23,8 @@ func NewResolver() *Resolver {
 		users: users,
 
 		lastUserId: 3,
+
+		usersChan: make(chan *model.User),
 	}
 
 }
@@ -35,4 +37,6 @@ type Resolver struct {
 	lastTodoId int
 
 	lastUserId int
+
+	usersChan chan *model.User
 }
