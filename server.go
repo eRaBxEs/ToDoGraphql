@@ -14,6 +14,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/websocket"
+	"github.com/rs/cors"
 )
 
 const defaultPort = "8080"
@@ -27,6 +28,11 @@ func main() {
 	// srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
 	//instead of ‘generated.Config{Resolvers: &graph.Resolver{}})’
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:4000", "http://localhost:8080"},
+		AllowCredentials: true,
+		Debug:            false,
+	})
 
 	srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: graph.NewResolver()}))
 	// Configure WebSocket with CORS
@@ -54,7 +60,7 @@ func main() {
 	})
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	http.Handle("/query", c.Handler(srv))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
